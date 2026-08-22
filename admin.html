@@ -123,9 +123,10 @@
     </a>
     <h2>لوحة تحكم المتجر</h2>
     <p>على مقاسك — M for MADA</p>
+    <input type="email" id="emailInput" placeholder="الإيميل">
     <input type="password" id="pwInput" placeholder="كلمة السر">
     <button onclick="tryLogin()">دخول</button>
-    <p class="err" id="loginErr">كلمة السر غلط</p>
+    <p class="err" id="loginErr">الإيميل أو كلمة السر غلط</p>
   </div>
 </div>
 
@@ -197,6 +198,7 @@
         <div class="field"><label>رقم الواتساب (بكود الدولة، بدون +)</label><input id="setWhatsapp"></div>
         <div class="field"><label>العنوان</label><input id="setAddress"></div>
         <h3 style="margin:18px 0 12px;font-size:16px;">أمان الأدمن</h3>
+        <div class="field"><label>إيميل الدخول للوحة التحكم</label><input id="setAdminEmail" type="email"></div>
         <div class="field"><label>كلمة سر لوحة التحكم</label><input id="setAdminPw" type="text"></div>
         <button class="btn rust" onclick="saveSettings()">حفظ الإعدادات</button>
         <p id="settingsSaved" style="color:var(--green);font-size:13px;margin-top:10px;display:none;">تم الحفظ ✓</p>
@@ -251,10 +253,12 @@ let currentSizes = {};
 
 // ---------- LOGIN ----------
 async function tryLogin(){
+  const email = document.getElementById('emailInput').value.trim().toLowerCase();
   const pw = document.getElementById('pwInput').value;
   const { data } = await sb.from('store_settings').select('value').eq('key','admin').single();
+  const realEmail = data && data.value && (data.value.email || '').toLowerCase();
   const realPw = data && data.value && data.value.password;
-  if(pw && pw === realPw){
+  if(email && pw && email === realEmail && pw === realPw){
     sessionStorage.setItem('mada_admin_ok','1');
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('dash').style.display='block';
@@ -263,6 +267,7 @@ async function tryLogin(){
     document.getElementById('loginErr').style.display='block';
   }
 }
+document.getElementById('emailInput').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('pwInput').focus(); });
 document.getElementById('pwInput').addEventListener('keydown', e => { if(e.key==='Enter') tryLogin(); });
 
 if(sessionStorage.getItem('mada_admin_ok') === '1'){
@@ -476,6 +481,7 @@ async function loadSettings(){
     document.getElementById('setAddress').value = map.contact.address||'';
   }
   if(map.admin){
+    document.getElementById('setAdminEmail').value = map.admin.email||'';
     document.getElementById('setAdminPw').value = map.admin.password||'';
   }
 }
@@ -490,7 +496,7 @@ async function saveSettings(){
     whatsapp: document.getElementById('setWhatsapp').value,
     address: document.getElementById('setAddress').value
   };
-  const admin = { password: document.getElementById('setAdminPw').value };
+  const admin = { email: document.getElementById('setAdminEmail').value.trim(), password: document.getElementById('setAdminPw').value };
 
   await sb.from('store_settings').upsert([
     {key:'hero', value: hero},
@@ -503,4 +509,3 @@ async function saveSettings(){
 </script>
 </body>
 </html>
-
