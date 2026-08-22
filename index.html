@@ -51,33 +51,39 @@
     color:var(--cream);
     border-bottom:3px dashed var(--gold);
   }
-  .header-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;gap:16px;}
-  .brand{display:flex;align-items:center;gap:12px;}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;gap:12px;}
+  .brand{display:flex;align-items:center;gap:10px;}
   .badge{
-    width:46px;height:46px;border-radius:50%;
-    border:2px dashed var(--gold);
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Cairo',sans-serif;font-weight:900;font-size:15px;
-    color:var(--gold);
-    flex-shrink:0;
-    background: radial-gradient(circle at 30% 30%, #3a2213, var(--dark));
-    text-align:center;line-height:1.05;
+    height:34px;padding:0 16px;border-radius:999px;
+    display:flex;align-items:center;gap:6px;justify-content:center;
+    font-family:'Cairo',sans-serif;font-weight:800;font-size:13px;
+    color:#fff;flex-shrink:0;text-decoration:none;
+    background: radial-gradient(circle at 30% 20%, #5b1fa0, #1a0630 75%);
+    border:1.5px solid rgba(196,120,255,.7);
+    box-shadow: 0 0 6px rgba(168,85,247,.85), 0 0 16px rgba(147,51,234,.6), inset 0 0 10px rgba(216,160,255,.25);
+    text-shadow: 0 0 6px rgba(255,255,255,.55);
+    white-space:nowrap;
   }
-  .badge span{display:block;font-size:9px;font-weight:600;letter-spacing:.5px;}
-  .brand-name{font-family:'Cairo',sans-serif;font-weight:900;font-size:22px;letter-spacing:.5px;}
-  nav{display:flex;align-items:center;gap:22px;font-weight:700;}
-  nav a{opacity:.9;font-size:15px;}
+  .badge .ltr-part{direction:ltr;unicode-bidi:isolate;}
+  .badge .rtl-part{direction:rtl;unicode-bidi:isolate;font-family:'Tajawal',sans-serif;font-weight:700;}
+  .brand-name{font-family:'Cairo',sans-serif;font-weight:900;font-size:19px;letter-spacing:.4px;}
+  nav{display:flex;align-items:center;gap:20px;font-weight:700;}
+  nav a{opacity:.9;font-size:14px;}
   nav a:hover{color:var(--tan);}
   .cart-btn{
     position:relative;background:var(--rust);color:#fff;border:none;
-    padding:10px 16px;border-radius:30px;font-family:'Tajawal';font-weight:700;
-    cursor:pointer;display:flex;align-items:center;gap:8px;font-size:14px;
+    padding:8px 14px;border-radius:26px;font-family:'Tajawal';font-weight:700;
+    cursor:pointer;display:flex;align-items:center;gap:7px;font-size:13px;
   }
   .cart-count{
     background:var(--cream);color:var(--dark);
-    border-radius:50%;width:20px;height:20px;font-size:12px;
+    border-radius:50%;width:19px;height:19px;font-size:11px;
     display:flex;align-items:center;justify-content:center;font-weight:900;
   }
+  .menu-toggle{display:none;background:none;border:1px solid var(--cream);color:var(--cream);border-radius:6px;width:34px;height:34px;font-size:16px;}
+  .mobile-nav{display:none;flex-direction:column;background:var(--dark);border-bottom:3px dashed var(--gold);padding:8px 16px 14px;}
+  .mobile-nav a{color:var(--cream);padding:10px 4px;font-weight:700;font-size:14px;border-bottom:1px solid rgba(255,255,255,.08);}
+  .mobile-nav.open{display:flex;}
 
   /* ===== hero ===== */
   .hero{
@@ -228,6 +234,14 @@
   @media(max-width:820px){
     .hero-inner{grid-template-columns:1fr;}
     nav{display:none;}
+    .menu-toggle{display:block;}
+    .brand-name{font-size:16px;}
+    .badge{height:30px;padding:0 12px;font-size:12px;}
+    .cart-btn{padding:7px 12px;font-size:12px;}
+  }
+  @media(min-width:821px){
+    .menu-toggle{display:none;}
+    .mobile-nav{display:none !important;}
   }
 </style>
 </head>
@@ -236,17 +250,26 @@
 <header>
   <div class="header-inner wrap">
     <div class="brand">
-      <div class="badge">M<span>for MADA</span></div>
       <div class="brand-name">على مقاسك</div>
+      <a class="badge" href="https://protofile-sepia.vercel.app/" target="_blank" rel="noopener">
+        <span class="ltr-part">M for MADA</span><span class="rtl-part">تصميم</span>
+      </a>
     </div>
     <nav>
       <a href="#products">المتجر</a>
       <a href="#track" id="trackLink">تتبع طلبك</a>
       <a href="#contact">تواصل معنا</a>
     </nav>
-    <button class="cart-btn" onclick="openCart()">
-      🛍️ السلة <span class="cart-count" id="cartCount">0</span>
-    </button>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="cart-btn" onclick="openCart()">
+        🛍️ السلة <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <button class="menu-toggle" onclick="document.getElementById('mobileNav').classList.toggle('open')">☰</button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#products" onclick="document.getElementById('mobileNav').classList.remove('open')">المتجر</a>
+    <a href="#contact" onclick="document.getElementById('mobileNav').classList.remove('open')">تواصل معنا</a>
   </div>
 </header>
 
@@ -295,14 +318,17 @@
   <div class="foot-inner">
     <div>
       <div class="foot-brand">
-        <div class="badge">M<span>for MADA</span></div>
         <strong style="font-family:'Cairo'">على مقاسك</strong>
+        <a class="badge" href="https://protofile-sepia.vercel.app/" target="_blank" rel="noopener">
+          <span class="ltr-part">M for MADA</span><span class="rtl-part">تصميم</span>
+        </a>
       </div>
       <p id="footAddress">القاهرة، مصر</p>
     </div>
     <div>
       <p>واتساب: <span id="footWhatsapp">—</span></p>
       <p>تليفون: <span id="footPhone">—</span></p>
+      <p style="margin-top:10px;"><a href="admin.html" style="opacity:.55;font-size:12px;text-decoration:underline;">لوحة التحكم</a></p>
     </div>
   </div>
 </footer>
