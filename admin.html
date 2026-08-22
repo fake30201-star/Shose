@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,17 +7,40 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
-  :root{
-    --dark:#241209; --leather:#6B3A22; --tan:#C08552; --cream:#F5EBDD;
-    --rust:#B5472B; --gold:#C9A24B; --ink:#2A1A12; --line:rgba(42,26,18,.14);
-    --green:#2e7d32; --amber:#b8860b; --blue:#1565c0; --gray:#777;
+  :root {
+    --dark: #241209;
+    --leather: #6B3A22;
+    --tan: #C08552;
+    --cream: #F5EBDD;
+    --rust: #B5472B;
+    --gold: #C9A24B;
+    --ink: #2A1A12;
+    --line: rgba(42, 26, 18, .14);
+    --green: #2e7d32;
+    --amber: #b8860b;
+    --blue: #1565c0;
+    --gray: #777;
+    --bg: #F5EBDD;
+    --card-bg: #ffffff;
+    --text: #2A1A12;
+    --border: rgba(42, 26, 18, .14);
+  }
+  [data-theme="dark"] {
+    --bg: #1a0f08;
+    --card-bg: #2a1a12;
+    --text: #F5EBDD;
+    --border: rgba(245, 235, 221, .15);
+    --cream: #2a1a12;
+    --ink: #F5EBDD;
+    --line: rgba(245, 235, 221, .15);
+    --gray: #aaa;
   }
   html,body{overflow-x:hidden;width:100%;}
   *{box-sizing:border-box;margin:0;padding:0;font-family:'Tajawal',sans-serif;}
   h1,h2,h3,.display{font-family:'Cairo',sans-serif;}
-  body{background:var(--cream);color:var(--ink);}
+  body{background:var(--bg);color:var(--text);transition:background .3s, color .3s;}
   button{cursor:pointer;font-family:'Tajawal';}
-  input,textarea,select{font-family:'Tajawal';}
+  input,textarea,select{font-family:'Tajawal';background:var(--card-bg);color:var(--text);border-color:var(--border);}
 
   /* login */
   #loginScreen{
@@ -25,23 +48,25 @@
     background:linear-gradient(180deg,var(--dark),#34200f);
   }
   .login-box{
-    background:#fff;padding:40px 32px;border-radius:14px;width:100%;max-width:360px;text-align:center;
+    background:var(--card-bg);padding:40px 32px;border-radius:14px;width:100%;max-width:360px;text-align:center;
   }
-  .badge{
+  .badge {
     height:36px;padding:0 16px;border-radius:999px;
-    display:flex;align-items:center;gap:6px;justify-content:center;font-weight:800;font-size:13px;
-    color:#fff;background:radial-gradient(circle at 30% 20%,#5b1fa0,#1a0630 75%);
-    border:1.5px solid rgba(196,120,255,.7);
-    box-shadow:0 0 6px rgba(168,85,247,.85),0 0 16px rgba(147,51,234,.6),inset 0 0 10px rgba(216,160,255,.25);
-    text-shadow:0 0 6px rgba(255,255,255,.55);
-    margin:0 auto 14px;text-decoration:none;white-space:nowrap;
+    display:flex;align-items:center;gap:6px;justify-content:center;
+    font-family:'Cairo',sans-serif;font-weight:800;font-size:13px;
+    color:#fff;flex-shrink:0;text-decoration:none;
+    background:radial-gradient(circle at 30% 20%, var(--leather), var(--dark) 75%);
+    border:1.5px solid var(--gold);
+    box-shadow:0 0 6px rgba(201,162,75,0.3), inset 0 0 8px rgba(201,162,75,0.1);
+    text-shadow:0 0 4px rgba(201,162,75,0.3);
+    margin:0 auto 14px;white-space:nowrap;
   }
   .badge .ltr-part{direction:ltr;unicode-bidi:isolate;}
   .badge .rtl-part{direction:rtl;unicode-bidi:isolate;font-family:'Tajawal',sans-serif;font-weight:700;}
   .login-box h2{margin-bottom:4px;}
   .login-box p{opacity:.6;font-size:13px;margin-bottom:20px;}
   .login-box input{
-    width:100%;padding:12px;border:1.5px solid var(--line);border-radius:8px;margin-bottom:12px;font-size:14px;
+    width:100%;padding:12px;border:1.5px solid var(--border);border-radius:8px;margin-bottom:12px;font-size:14px;
   }
   .login-box button{
     width:100%;background:var(--rust);color:#fff;border:none;padding:13px;border-radius:8px;font-weight:700;
@@ -55,14 +80,14 @@
     position:sticky;top:0;z-index:20;border-bottom:3px dashed var(--gold);flex-wrap:wrap;gap:8px;
   }
   .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-family:'Cairo';}
-  header .badge{height:30px;font-size:11px;padding:0 10px;margin:0;width:auto;}
+  header .badge{height:30px;font-size:11px;padding:0 10px;margin:0;width:auto;background:radial-gradient(circle at 30% 20%, var(--leather), var(--dark) 75%);border-color:var(--gold);box-shadow:0 0 6px rgba(201,162,75,0.3), inset 0 0 8px rgba(201,162,75,0.1);text-shadow:0 0 4px rgba(201,162,75,0.3);}
   header a{color:var(--cream);opacity:.75;font-size:13px;text-decoration:none;}
   .tabs{
-    display:flex;gap:6px;background:#fff;border-bottom:1px solid var(--line);padding:0 22px;overflow-x:auto;
+    display:flex;gap:6px;background:var(--card-bg);border-bottom:1px solid var(--border);padding:0 22px;overflow-x:auto;
   }
   .tab{
     padding:14px 18px;font-weight:700;font-size:14px;border:none;background:none;color:var(--gray);
-    border-bottom:3px solid transparent;white-space:nowrap;
+    border-bottom:3px solid transparent;white-space:nowrap;transition:color .3s;
   }
   .tab.active{color:var(--rust);border-color:var(--rust);}
   main{max-width:1100px;margin:0 auto;padding:24px 20px 60px;width:100%;}
@@ -73,14 +98,16 @@
   .panel-head h2{font-size:22px;}
   .btn{
     background:var(--leather);color:#fff;border:none;padding:11px 18px;border-radius:8px;font-weight:700;font-size:14px;
+    transition:opacity .2s;
   }
+  .btn:hover{opacity:.85;}
   .btn.rust{background:var(--rust);}
-  .btn.ghost{background:#fff;border:1.5px solid var(--line);color:var(--ink);}
+  .btn.ghost{background:transparent;border:1.5px solid var(--border);color:var(--text);}
   .btn.sm{padding:7px 12px;font-size:12.5px;}
 
-  table{width:100%;min-width:640px;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);}
-  th,td{padding:12px 14px;text-align:right;font-size:13.5px;border-bottom:1px solid var(--line);}
-  th{background:#F0E6D6;font-weight:800;font-family:'Cairo';}
+  table{width:100%;min-width:640px;border-collapse:collapse;background:var(--card-bg);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+  th,td{padding:12px 14px;text-align:right;font-size:13.5px;border-bottom:1px solid var(--border);}
+  th{background:rgba(107,58,34,.15);font-weight:800;font-family:'Cairo';}
   tr:last-child td{border-bottom:none;}
   .thumb{width:42px;height:42px;border-radius:6px;object-fit:cover;background:#eee;}
   .pill{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;color:#fff;display:inline-block;}
@@ -89,23 +116,23 @@
   .pill.shipped{background:#6a1b9a;}
   .pill.delivered{background:var(--green);}
   .pill.cancelled{background:var(--rust);}
-  select.status-select{padding:6px;border-radius:6px;border:1px solid var(--line);font-size:12.5px;}
+  select.status-select{padding:6px;border-radius:6px;border:1px solid var(--border);font-size:12.5px;background:var(--card-bg);color:var(--text);}
 
   /* modal */
   .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:100;padding:16px;}
   .modal.open{display:flex;}
-  .modal-box{background:#fff;border-radius:14px;padding:26px;max-width:520px;width:100%;max-height:88vh;overflow-y:auto;}
+  .modal-box{background:var(--card-bg);border-radius:14px;padding:26px;max-width:520px;width:100%;max-height:88vh;overflow-y:auto;}
   .modal-box h3{margin-bottom:16px;}
   .field{margin-bottom:13px;}
   .field label{display:block;font-size:13px;font-weight:700;margin-bottom:5px;}
   .field input,.field textarea,.field select{
-    width:100%;padding:10px;border:1.5px solid var(--line);border-radius:8px;font-size:14px;
+    width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;
   }
   .field textarea{min-height:60px;resize:vertical;}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   .size-editor{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
-  .size-row-edit{display:flex;align-items:center;gap:6px;background:#F0E6D6;padding:6px 8px;border-radius:8px;}
-  .size-row-edit input{width:50px;padding:5px;border-radius:5px;border:1px solid var(--line);}
+  .size-row-edit{display:flex;align-items:center;gap:6px;background:rgba(107,58,34,.12);padding:6px 8px;border-radius:8px;}
+  .size-row-edit input{width:50px;padding:5px;border-radius:5px;border:1px solid var(--border);}
   .size-row-edit .rm{color:var(--rust);cursor:pointer;font-weight:900;}
   .modal-actions{display:flex;gap:10px;margin-top:16px;}
   .modal-actions .btn{flex:1;}
@@ -113,14 +140,16 @@
   .empty{opacity:.55;text-align:center;padding:40px;}
   .items-detail{font-size:12.5px;opacity:.8;}
   .items-detail div{margin-bottom:2px;}
+  .dark-toggle{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--text);display:flex;align-items:center;gap:6px;}
+  .dark-toggle:hover{opacity:.8;}
 
   @media(max-width:700px){
     .table-wrap{overflow-x:visible;}
     table{min-width:0;}
     thead{display:none;}
     table, tbody, tr, td{display:block;width:100%;}
-    tr{background:#fff;border:1px solid var(--line);border-radius:10px;margin-bottom:12px;padding:6px 0;box-shadow:0 1px 3px rgba(0,0,0,.06);}
-    td{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 14px;border-bottom:1px dashed var(--line);text-align:left;}
+    tr{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;padding:6px 0;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+    td{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 14px;border-bottom:1px dashed var(--border);text-align:left;}
     td:last-child{border-bottom:none;}
     td::before{content:attr(data-label);font-weight:800;font-family:'Cairo';color:var(--leather);flex-shrink:0;}
     td:empty::before{content:none;}
@@ -134,10 +163,10 @@
 <div id="loginScreen">
   <div class="login-box">
     <a class="badge" href="https://protofile-sepia.vercel.app/" target="_blank" rel="noopener">
-      <span class="ltr-part">M for MADA</span><span class="rtl-part">تصميم</span>
+      <span class="ltr-part">the creator MADA</span>
     </a>
     <h2>لوحة تحكم المتجر</h2>
-    <p>على مقاسك — M for MADA</p>
+    <p>على مقاسك — the creator MADA</p>
     <input type="email" id="emailInput" placeholder="الإيميل">
     <input type="password" id="pwInput" placeholder="كلمة السر">
     <button onclick="tryLogin()">دخول</button>
@@ -148,12 +177,16 @@
 <!-- DASHBOARD -->
 <div id="dash">
   <header>
-    <div class="brand">لوحة تحكم على مقاسك
+    <div class="brand">
+      لوحة تحكم على مقاسك
       <a class="badge" href="https://protofile-sepia.vercel.app/" target="_blank" rel="noopener">
-        <span class="ltr-part">M for MADA</span><span class="rtl-part">تصميم</span>
+        <span class="ltr-part">the creator MADA</span>
       </a>
     </div>
-    <a href="index.html" target="_blank">عرض المتجر ↗</a>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="dark-toggle" onclick="toggleDarkMode()" id="darkToggle">🌙 داكن</button>
+      <a href="index.html" target="_blank">عرض المتجر ↗</a>
+    </div>
   </header>
 
   <div class="tabs">
@@ -181,7 +214,7 @@
       <div class="panel-head">
         <h2>الأقسام</h2>
         <div class="card-row">
-          <input id="newCatName" placeholder="اسم قسم جديد" style="padding:10px;border-radius:8px;border:1.5px solid var(--line);">
+          <input id="newCatName" placeholder="اسم قسم جديد" style="padding:10px;border-radius:8px;border:1.5px solid var(--border);">
           <button class="btn rust" onclick="addCategory()">إضافة</button>
         </div>
       </div>
@@ -196,14 +229,14 @@
       <div class="panel-head"><h2>الطلبات</h2></div>
       <div class="table-wrap"><table>
         <thead><tr><th>العميل</th><th>الموبايل</th><th>المدينة</th><th>المنتجات</th><th>الإجمالي</th><th>الحالة</th><th>التاريخ</th><th></th></tr></thead>
-        <tbody id="ordersTbody"><tr><td colspan="7" class="empty">جاري التحميل...</td></tr></tbody>
+        <tbody id="ordersTbody"><tr><td colspan="8" class="empty">جاري التحميل...</td></tr></tbody>
       </table></div>
     </div>
 
     <!-- SETTINGS -->
     <div class="panel" id="panel-settings">
       <div class="panel-head"><h2>إعدادات المتجر</h2></div>
-      <div style="background:#fff;border-radius:12px;padding:20px;max-width:520px;">
+      <div style="background:var(--card-bg);border-radius:12px;padding:20px;max-width:520px;">
         <h3 style="margin-bottom:12px;font-size:16px;">الواجهة الرئيسية</h3>
         <div class="field"><label>عنوان الهيرو</label><input id="setHeroTitle"></div>
         <div class="field"><label>الوصف تحت العنوان</label><textarea id="setHeroSubtitle"></textarea></div>
@@ -245,8 +278,8 @@
     <div class="field">
       <label>المقاسات والمخزون</label>
       <div class="card-row">
-        <input id="newSizeNum" placeholder="مقاس مثل 41" style="width:110px;padding:8px;border-radius:6px;border:1px solid var(--line);">
-        <input id="newSizeStock" placeholder="الكمية" type="number" style="width:90px;padding:8px;border-radius:6px;border:1px solid var(--line);">
+        <input id="newSizeNum" placeholder="مقاس مثل 41" style="width:110px;padding:8px;border-radius:6px;border:1px solid var(--border);">
+        <input id="newSizeStock" placeholder="الكمية" type="number" style="width:90px;padding:8px;border-radius:6px;border:1px solid var(--border);">
         <button class="btn sm" onclick="addSizeRow()">إضافة مقاس</button>
       </div>
       <div class="size-editor" id="sizeEditor"></div>
@@ -273,6 +306,19 @@ let CATEGORIES = [];
 let PRODUCTS = [];
 let currentSizes = {};
 let currentImages = [];
+
+// ---------- DARK MODE ----------
+function toggleDarkMode() {
+  const html = document.getElementById('htmlRoot');
+  const btn = document.getElementById('darkToggle');
+  if (html.getAttribute('data-theme') === 'dark') {
+    html.removeAttribute('data-theme');
+    btn.textContent = '🌙 داكن';
+  } else {
+    html.setAttribute('data-theme', 'dark');
+    btn.textContent = '☀️ فاتح';
+  }
+}
 
 // ---------- IMAGE UPLOAD ----------
 function syncImagesTextarea(){
@@ -311,7 +357,6 @@ async function uploadImages(files){
   statusEl.style.display = 'none';
   document.getElementById('pImageFile').value = '';
 }
-// keep manual textarea edits in sync with the image list
 document.getElementById('pImages').addEventListener('change', function(){
   currentImages = this.value.split('\n').map(s=>s.trim()).filter(Boolean);
   renderImagePreview();
@@ -388,6 +433,7 @@ async function loadCategories(){
   const sel = document.getElementById('pCategory');
   sel.innerHTML = '<option value="">بدون قسم</option>' + CATEGORIES.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
 }
+
 async function addCategory(){
   const name = document.getElementById('newCatName').value.trim();
   if(!name) return;
@@ -409,7 +455,7 @@ async function loadProducts(){
   tbody.innerHTML = PRODUCTS.length ? '' : '<tr><td colspan="7" class="empty">لا يوجد منتجات بعد</td></tr>';
   PRODUCTS.forEach(p => {
     const cat = CATEGORIES.find(c=>c.id===p.category_id);
-    const img = (p.images&&p.images[0]) ? `<img class="thumb" src="${p.images[0]}">` : `<div class="thumb"></div>`;
+    const img = (p.images&&p.images[0]) ? `<img class="thumb" src="${p.images[0]}">` : `<div class="thumb" style="background:var(--border);"></div>`;
     const sizesText = Object.entries(p.sizes||{}).map(([s,q])=>`${s}(${q})`).join(' ');
     const tr = document.createElement('tr');
     tr.innerHTML = `
