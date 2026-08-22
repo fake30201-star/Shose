@@ -254,16 +254,31 @@ let currentSizes = {};
 // ---------- LOGIN ----------
 async function tryLogin(){
   const email = document.getElementById('emailInput').value.trim().toLowerCase();
-  const pw = document.getElementById('pwInput').value;
-  const { data } = await sb.from('store_settings').select('value').eq('key','admin').single();
-  const realEmail = data && data.value && (data.value.email || '').toLowerCase();
-  const realPw = data && data.value && data.value.password;
+  const pw = document.getElementById('pwInput').value.trim();
+  const { data, error } = await sb.from('store_settings').select('value').eq('key','admin').maybeSingle();
+
+  if(error){
+    document.getElementById('loginErr').textContent = 'في مشكلة في الاتصال بقاعدة البيانات: ' + error.message;
+    document.getElementById('loginErr').style.display='block';
+    console.error(error);
+    return;
+  }
+  if(!data){
+    document.getElementById('loginErr').textContent = 'لسه مفيش إعدادات أدمن محفوظة. شغّلي ملف schema.sql في Supabase الأول.';
+    document.getElementById('loginErr').style.display='block';
+    return;
+  }
+
+  const realEmail = (data.value.email || '').trim().toLowerCase();
+  const realPw = (data.value.password || '').trim();
+
   if(email && pw && email === realEmail && pw === realPw){
     sessionStorage.setItem('mada_admin_ok','1');
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('dash').style.display='block';
     initDash();
   } else {
+    document.getElementById('loginErr').textContent = 'الإيميل أو كلمة السر غلط';
     document.getElementById('loginErr').style.display='block';
   }
 }
@@ -509,3 +524,4 @@ async function saveSettings(){
 </script>
 </body>
 </html>
+
